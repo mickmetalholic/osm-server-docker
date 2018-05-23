@@ -36,7 +36,7 @@ RUN cd /tmp && \
     make install-mod_tile
 
 # Install style sheet
-RUN cd ~ && \
+RUN cd /root && \
     wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz && \
     tar -xzf v2.29.1.tar.gz && \
     cd openstreetmap-carto-2.29.1 && \
@@ -55,7 +55,6 @@ RUN cp /tmp/mod_tile/debian/renderd.init /etc/init.d/renderd && \
     chmod a+x /etc/init.d/renderd && \
     sed --file /tmp/renderd.init.sed --in-place /etc/init.d/renderd && \
     sed --file /tmp/renderd.conf.sed --in-place /usr/local/etc/renderd.conf
-
 ## Configure apache2
 RUN a2enmod headers && \
     echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" > /etc/apache2/mods-available/tile.load && \

@@ -1,28 +1,45 @@
 #!/bin/sh
 
-PGSQLDIR=/data1/osm-postgresql
-GISDATADIR=/data1/gisData
-RENDERCACHEDIR=/data1/cache
+basepath=$(cd `dirname $0`; pwd)/
+PGSQLDIR=data/osm-postgresql
+GISDATADIR=data/gisData
+RENDERCACHEDIR=data/cache
+GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
 
-# intialize database
+prebuild() {
+  # make directories
+  mkdir -p $PGSQLDIR $GISDATADIR $RENDERCACHEDIR
+  # download gis data
+  wget -P $GISDATADIR -O data.pbf $GISDATAURI
+}
+
+# build docker daemon
+build() {
+  docker build -t osm-server .
+}
+
+# intialize
 initialize() {
-  docker run -it -v $PGSQLDIR:/var/lib/postgresql osm-server initialize
+  # initialize database
+  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql osm-server initialize
 }
 
 # import data
 import() {
-  docker run -it -v $PGSQLDIR:/var/lib/postgresql -v $GISDATADIR:/data osm-server import
+  # import data to database
+  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data osm-server import
 }
 
 # start container
 start() {
-  docker run -dit -v $PGSQLDIR:/var/lib/postgresql -v $RENDERCACHEDIR:/var/run/renderd -p 80:80 osm-server start
+  docker run -dit -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${RENDERCACHEDIR}:/var/run/renderd -p 80:80 osm-server start
 }
 
 # debug
 debug() {
-  docker run -it -v $PGSQLDIR:/var/lib/postgresql -v $GISDATADIR:/data -v $RENDERCACHEDIR:/var/run/renderd -p 80:80 osm-server cli
+  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data -v ${basepath}${RENDERCACHEDIR}:/var/run/renderd -p 80:80 osm-server cli
 }
+
 
 # Execute the specified command sequence
 for arg
