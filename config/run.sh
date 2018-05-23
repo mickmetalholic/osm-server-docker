@@ -42,7 +42,7 @@ initialize() {
 import() {
   echo "Importing data..."
   startdb
-  osm2pgsql --slim -d gis -C 6000 --hstore -S /root/openstreetmap-carto-2.29.1/openstreetmap-carto.style /data/china-latest.osm.pbf
+  osm2pgsql --slim -d gis -C 6000 --hstore -S /root/openstreetmap-carto-2.29.1/openstreetmap-carto.style /data/data.pbf
   echo "Finished importing data..."
 }
 
