@@ -1,0 +1,3 @@
+\c gis
+CREATE EXTENSION postgis;
+CREATE EXTENSION hstore;
