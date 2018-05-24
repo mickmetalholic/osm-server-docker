@@ -42,12 +42,12 @@ import() {
 
 # start services
 start() {
-  docker run -dit -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${RENDERCACHEDIR}:/var/run/renderd -p 80:80 osm-server start
+  docker run -dit -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile -p 80:80 osm-server start
 }
 
 # debug
 debug() {
-  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data -v ${basepath}${RENDERCACHEDIR}:/var/run/renderd -p 80:80 osm-server cli
+  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile -p 80:80 osm-server cli
 }
 
 
