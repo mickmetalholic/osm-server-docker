@@ -8,11 +8,12 @@ GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
 DAEMONNAME=osm-server
 
 prebuild() {
-  echo "Start doing some preperations..."
+  echo "Starting doing some preperations..."
   # make directories
   mkdir -p $PGSQLDIR $GISDATADIR $RENDERCACHEDIR
   # download gis data
-  wget -P ${basepath}${GISDATADIR} -O data.pbf $GISDATAURI
+  wget -O data.pbf $GISDATAURI
+  mv data.pbf $GISDATADIR/
   # download and process stylesheet
   wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
   tar -xzf v2.29.1.tar.gz
@@ -23,7 +24,7 @@ prebuild() {
 
 # build docker daemon
 build() {
-  echo "Starting build the daemon "${DAEMONNAME}"..."
+  echo "Starting building the daemon "${DAEMONNAME}"..."
   docker build -t $DAEMONNAME .
 }
 
