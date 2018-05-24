@@ -36,10 +36,8 @@ RUN cd /tmp && \
     make install-mod_tile
 
 # Install style sheet
-RUN cd /root && \
-    wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz && \
-    tar -xzf v2.29.1.tar.gz && \
-    cd openstreetmap-carto-2.29.1 && \
+RUN cp /data/openstreetmap-carto-2.29.1 /root
+RUN cd /root/openstreetmap-carto-2.29.1 && \
     sh ./get-shapefiles.sh && \
     carto project.mml > style.xml
 
@@ -49,8 +47,8 @@ RUN mkdir /var/run/renderd && \
     mkdir -p /var/lib/mod_tile
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf && \
     ldconfig
-COPY renderd.conf.sed /tmp/
-COPY renderd.init.sed /tmp/
+COPY config/renderd.conf.sed /tmp/
+COPY config/renderd.init.sed /tmp/
 RUN cp /tmp/mod_tile/debian/renderd.init /etc/init.d/renderd && \
     chmod a+x /etc/init.d/renderd && \
     sed --file /tmp/renderd.init.sed --in-place /etc/init.d/renderd && \
@@ -59,7 +57,7 @@ RUN cp /tmp/mod_tile/debian/renderd.init /etc/init.d/renderd && \
 RUN a2enmod headers && \
     echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" > /etc/apache2/mods-available/tile.load && \
     ln -s /etc/apache2/mods-available/tile.load /etc/apache2/mods-enabled/
-COPY 000-default.conf.sed /tmp/
+COPY config/000-default.conf.sed /tmp/
 RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/000-default.conf
 
 
@@ -69,9 +67,9 @@ RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/0
 # TODO: healthcheck
 
 # Scripts
-COPY setLang.sql /
-COPY addExtensions.sql /
-COPY run.sh /
+COPY config/setLang.sql /
+COPY config/addExtensions.sql /
+COPY config/run.sh /
 ENTRYPOINT ["/bin/sh", "/run.sh"]
 
 # Default command
