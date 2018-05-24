@@ -25,17 +25,15 @@ build() {
 
 # intialize
 initialize() {
-  # initialize database
   docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql osm-server initialize
 }
 
 # import data
 import() {
-  # import data to database
   docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data osm-server import
 }
 
-# start container
+# start services
 start() {
   docker run -dit -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${RENDERCACHEDIR}:/var/run/renderd -p 80:80 osm-server start
 }
