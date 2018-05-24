@@ -18,7 +18,9 @@ prebuild() {
   wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
   tar -xzf v2.29.1.tar.gz
   rm v2.29.1.tar.gz
-  ./openstreetmap-carto-2.29.1/get-shapefiles.sh
+  cd openstreetmap-carto-2.29.1
+  ./get-shapefiles.sh
+  cd ..
   echo "Preperations completed, now you can build the daemon."
 }
 
