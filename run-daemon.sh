@@ -15,9 +15,7 @@ prebuild() {
   # download and process stylesheet
   wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
   tar -xzf v2.29.1.tar.gz
-  cd openstreetmap-carto-2.29.1
-  ./get-shapefiles.sh
-  cd ..
+  ./openstreetmap-carto-2.29.1/get-shapefiles.sh
 }
 
 # build docker daemon
