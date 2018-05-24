@@ -38,7 +38,7 @@ RUN cd /tmp && \
     make install-mod_tile
 
 # Install style sheet
-COPY openstreetmap-carto-2.29.1 /root/
+COPY openstreetmap-carto-2.29.1 /root/openstreetmap-carto-2.29.1
 RUN cd /root/openstreetmap-carto-2.29.1 && \
     sh ./get-shapefiles.sh && \
     carto project.mml > style.xml
