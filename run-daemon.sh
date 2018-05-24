@@ -5,7 +5,7 @@ PGSQLDIR=data/osm-postgresql
 GISDATADIR=data/gisData
 RENDERCACHEDIR=data/cache
 GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
-STYLEDATAURI=
+DAEMONNAME=osm-server
 
 prebuild() {
   # make directories
@@ -22,7 +22,7 @@ prebuild() {
 
 # build docker daemon
 build() {
-  docker build -t osm-server .
+  docker build -t . $DAEMONNAME
 }
 
 # intialize
