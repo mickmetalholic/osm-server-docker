@@ -5,15 +5,17 @@ PGSQLDIR=data/osm-postgresql
 GISDATADIR=data/gisData
 RENDERCACHEDIR=data/cache
 GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
-STYLEDATAURI=https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
+STYLEDATAURI=
 
 prebuild() {
   # make directories
   mkdir -p $PGSQLDIR $GISDATADIR $RENDERCACHEDIR
-  # download gis data and stylesheet
+  # download gis data
   wget -P $GISDATADIR -O data.pbf $GISDATAURI
-  wget $STYLEDATAURI
-  cd $GISDATADIR
+  # download and process stylesheet
+  wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
+  tar -xzf v2.29.1.tar.gz
+  cd openstreetmap-carto-2.29.1
   ./get-shapefiles.sh
   cd ..
 }
