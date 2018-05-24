@@ -5,7 +5,7 @@ ENV LANG C.UTF-8
 
 # Install packages
 # RUN sed -i 's#http://deb.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
-#    sed -i 's#http://security.debian.org#http://mirrors.163.com#g' /etc/apt/sources.list
+#     sed -i 's#http://security.debian.org#http://mirrors.163.com#g' /etc/apt/sources.list
 RUN apt-get update -y
 RUN apt-get install -y \
     wget \
