@@ -24,7 +24,7 @@ prebuild() {
 # build docker daemon
 build() {
   echo "Starting build the daemon "${DAEMONNAME}"..."
-  docker build -t . $DAEMONNAME
+  docker build -t $DAEMONNAME .
 }
 
 # intialize
