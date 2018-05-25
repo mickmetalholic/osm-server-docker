@@ -74,5 +74,9 @@ COPY config/addExtensions.sql /
 COPY config/run.sh /
 ENTRYPOINT ["/bin/sh", "/run.sh"]
 
+# healthcheck
+HEALTHCHECK --start-period=10s \
+  CMD curl --silent --fail 127.0.0.1:80/osm/0/0/0.png || exit 1
+
 # Default command
 CMD ["cli"]
