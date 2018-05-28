@@ -74,7 +74,7 @@ RUN apt-get clean && rm -rf /tmp/*
 COPY config/setLang.sql /
 COPY config/addExtensions.sql /
 COPY config/run.sh /
-ENTRYPOINT ["/bin/sh", "/run.sh"]
+ENTRYPOINT ["/bin/bash", "/run.sh"]
 
 
 # Health check
