@@ -52,8 +52,8 @@ RUN mkdir /var/run/renderd && \
     mkdir -p /var/lib/mod_tile
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf && \
     ldconfig
-COPY config/renderd.conf.sed /tmp/
-COPY config/renderd.init.sed /tmp/
+COPY config/renderd/renderd.conf.sed /tmp/
+COPY config/renderd/renderd.init.sed /tmp/
 RUN cp /tmp/mod_tile/debian/renderd.init /etc/init.d/renderd && \
     chmod a+x /etc/init.d/renderd && \
     sed --file /tmp/renderd.init.sed --in-place /etc/init.d/renderd && \
@@ -62,7 +62,7 @@ RUN cp /tmp/mod_tile/debian/renderd.init /etc/init.d/renderd && \
 RUN a2enmod headers && \
     echo "LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so" > /etc/apache2/mods-available/tile.load && \
     ln -s /etc/apache2/mods-available/tile.load /etc/apache2/mods-enabled/
-COPY config/000-default.conf.sed /tmp/
+COPY config/apache2/000-default.conf.sed /tmp/
 RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/000-default.conf
 
 
@@ -71,8 +71,8 @@ RUN apt-get clean && rm -rf /tmp/*
 
 
 # Scripts
-COPY config/setLang.sql /
-COPY config/addExtensions.sql /
+COPY config/pgsql/setLang.sql /
+COPY config/pgsql/addExtensions.sql /
 COPY config/run.sh /
 ENTRYPOINT ["/bin/bash", "/run.sh"]
 
