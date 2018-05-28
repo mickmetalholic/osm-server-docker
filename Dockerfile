@@ -67,7 +67,7 @@ RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/0
 
 
 # Clean up
-# RUN apt-get clean && rm -rf /tmp/*
+RUN apt-get clean && rm -rf /tmp/*
 
 
 # Scripts
