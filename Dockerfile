@@ -25,6 +25,7 @@ RUN apt-get install -y \
     node-carto \
     apache2
 
+
 # Install mod_tile
 RUN cd /tmp && \
     wget https://github.com/openstreetmap/mod_tile/archive/e25bfdba1c1f2103c69529f1a30b22a14ce311f1.tar.gz -O mod_tile.tar.gz && \
@@ -37,11 +38,13 @@ RUN cd /tmp && \
     make install && \
     make install-mod_tile
 
+
 # Install style sheet
 COPY openstreetmap-carto-2.29.1 /root/openstreetmap-carto-2.29.1
 RUN cd /root/openstreetmap-carto-2.29.1 && \
     sh ./get-shapefiles.sh && \
     carto project.mml > style.xml
+
 
 # Configure
 ## Configure renderd
@@ -66,7 +69,6 @@ RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/0
 # Clean up
 # RUN apt-get clean && rm -rf /tmp/*
 
-# TODO: healthcheck
 
 # Scripts
 COPY config/setLang.sql /
@@ -74,9 +76,11 @@ COPY config/addExtensions.sql /
 COPY config/run.sh /
 ENTRYPOINT ["/bin/sh", "/run.sh"]
 
-# healthcheck
+
+# Health check
 HEALTHCHECK --start-period=10s \
   CMD curl --silent --fail 127.0.0.1:80/osm/0/0/0.png || exit 1
+
 
 # Default command
 CMD ["cli"]
