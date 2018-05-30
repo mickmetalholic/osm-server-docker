@@ -4,8 +4,6 @@ MAINTAINER yuanshen@corp.netease.com
 ENV LANG C.UTF-8
 
 # Install packages
-# RUN sed -i 's#http://deb.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
-#     sed -i 's#http://security.debian.org#http://mirrors.163.com#g' /etc/apt/sources.list
 RUN apt-get update -y
 RUN apt-get install -y \
     wget \
@@ -39,13 +37,6 @@ RUN cd /tmp && \
     make install-mod_tile
 
 
-# Install style sheet
-COPY openstreetmap-carto-2.29.1 /root/openstreetmap-carto-2.29.1
-RUN cd /root/openstreetmap-carto-2.29.1 && \
-    sh ./get-shapefiles.sh && \
-    carto project.mml > style.xml
-
-
 # Configure
 ## Configure renderd
 RUN mkdir /var/run/renderd && \
@@ -68,6 +59,11 @@ RUN sed --file /tmp/000-default.conf.sed --in-place /etc/apache2/sites-enabled/0
 
 # Clean up
 RUN apt-get clean && rm -rf /tmp/*
+RUN apt-get remove -y \
+    wget \
+    build-essential \
+    autoconf \
+    libtool
 
 
 # Scripts

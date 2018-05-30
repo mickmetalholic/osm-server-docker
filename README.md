@@ -2,22 +2,49 @@
 
 An Docker image building configurations for an [openstreetmap](https://www.openstreetmap.org/) server.
 
-## Usage
+- stylesheet: openstreetmap-carto-2.29.1
+- map data: china-latest.osm.pbf
+- postgresql-9.4
+- apache2
+
+
+## Deploy
+
+### Get the docker image
+
+Download from dockerhub:
 
 ```bash
-# add excution permission
-chmod a+x osm.sh
-# download map data and stylesheet
-./osm.sh prebuild
-# import map data to database
+./osm.sh pull
+```
+
+Build image locally:
+
+```bash
+./osm.sh build
+```
+
+### Initialize
+
+```bash
+# create volume folders and download stylesheet and map data
+./osm.sh getdata
+# initialize stylesheet and database
+./osm.sh initialize
+# import data to database
 ./osm.sh import
-# start service
+```
+
+### Start service
+
+```bash
 ./osm.sh start
 ```
 
 Checkout http://127.0.0.1:80/osm/0/0/0.png, the server should be working.
 
 The database and server cache are in folder ./data, so please do not remove it.
+
 
 ## Develop and debug
 

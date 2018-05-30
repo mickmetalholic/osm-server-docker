@@ -1,28 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 
 basepath=$(cd `dirname $0`; pwd)/
-PGSQLDIR=data/osm-postgresql
+PGSQLDIR=data/postgresql
 GISDATADIR=data/gisData
 RENDERCACHEDIR=data/cache
-GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
-DAEMONNAME=osm-server
+STYLESHEETDIR=data/openstreetmap-carto-2.29.1
 
-prebuild() {
-  echo "Starting doing some preperations..."
-  # make directories
-  mkdir -p $PGSQLDIR $GISDATADIR $RENDERCACHEDIR
-  # download gis data
-  wget -O data.pbf $GISDATAURI
-  mv data.pbf $GISDATADIR/
-  # download and process stylesheet
-  wget https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
-  tar -xzf v2.29.1.tar.gz
-  rm v2.29.1.tar.gz
-  cd openstreetmap-carto-2.29.1
-  ./get-shapefiles.sh
-  cd ..
-  echo "Preperations completed, now you can build the daemon."
-}
+STYLESHEETURI=https://github.com/gravitystorm/openstreetmap-carto/archive/v2.29.1.tar.gz
+GISDATAURI=http://download.geofabrik.de/asia/china-latest.osm.pbf
+
+DAEMONNAME=osm-server
 
 # build docker daemon
 build() {
@@ -30,24 +17,66 @@ build() {
   docker build -t $DAEMONNAME .
 }
 
-# intialize
+# push docker daemon
+push() {
+  docker push $DAEMONNAME
+}
+
+# pull docker daemon
+pull() {
+  docker pull $DAEMONNAME
+}
+
+# make directories and download files
+getdata() {
+  echo "Starting downloading data..."
+  # make directories
+  mkdir -p $PGSQLDIR $GISDATADIR $RENDERCACHEDIR $STYLESHEETDIR
+  # download stylesheet
+  wget -O stylesheet.tar.gz $STYLESHEETURI
+  tar -xzf stylesheet.tar.gz -C data
+  rm stylesheet.tar.gz
+  # download gis data
+  wget -O data.pbf $GISDATAURI
+  mv data.pbf $GISDATADIR/
+  echo "Data download completed."
+}
+
+# initialize database and stylesheet
 initialize() {
-  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql osm-server initialize
+  docker run -it \
+    -v ${basepath}${PGSQLDIR}:/var/lib/postgresql \
+    -v ${basepath}${STYLESHEETDIR}:/root/stylesheet \
+    $DAEMONNAME initialize
 }
 
 # import data
 import() {
-  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data osm-server import
+  docker run -it \
+    -v ${basepath}${PGSQLDIR}:/var/lib/postgresql \
+    -v ${basepath}${GISDATADIR}:/data \
+    -v ${basepath}${STYLESHEETDIR}:/root/stylesheet \
+    $DAEMONNAME import
 }
 
 # start services
 start() {
-  docker run -dit -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile -p 80:80 osm-server start
+  docker run -dit \
+    -v ${basepath}${PGSQLDIR}:/var/lib/postgresql \
+    -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile \
+    -v ${basepath}${STYLESHEETDIR}:/root/stylesheet \
+    -p 80:80 \
+    $DAEMONNAME start
 }
 
 # debug
 debug() {
-  docker run -it -v ${basepath}${PGSQLDIR}:/var/lib/postgresql -v ${basepath}${GISDATADIR}:/data -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile -p 80:80 osm-server cli
+  docker run -it \
+    -v ${basepath}${PGSQLDIR}:/var/lib/postgresql \
+    -v ${basepath}${GISDATADIR}:/data \
+    -v ${basepath}${RENDERCACHEDIR}:/var/lib/mod_tile \
+    -v ${basepath}${STYLESHEETDIR}:/root/stylesheet \
+    $DAEMONNAME cli
 }
 
 
