@@ -41,7 +41,7 @@ Build image locally:
 ./osm.sh start
 ```
 
-Checkout http://127.0.0.1:80/osm/0/0/0.png, the server should be working.
+Checkout http://127.0.0.1:80/osm/0/0/0.png, and the server should be working.
 
 The database and server cache are in folder ./data, so please do not remove it.
 
